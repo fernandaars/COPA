@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Container information{% endblock %}
+{% block content_body %}
+    <div class="container">
+        <p>Information about container</p>
+    </div>
+    <div class="container">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Basic information</div>
+            <div class="panel-body">
+                <b>Container name:</b> {{ container.name }}<br/>
+                <b>Description:</b> {{ container.description }} <br/>
+                <b>Status:</b> {{ container.status }}<br/>
+                <b>Created at:</b> {{ container.created }}<br/>
+                <b>PID:</b> {{ container.pid }}<br/>
+                <b>Last update:</b> {{ container.last_update }}
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">Memory</div>
+            <div class="panel-body">
+                <b>Usage:</b> {{ container.usage_memory }} <br/>
+                <b>Usage peak:</b> {{ container.usage_memory_peak }} <br/>
+                <b>Swap usage:</b> {{ container.usage_swap }} <br/>
+                <b>Swap usage peak:</b> {{ container.usage_swap_peak }} <br/>
+            </div>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">CPU</div>
+            <div class="panel-body">
+                <b>Usage:</b> {{ container.cpu_usage }}<br/>
+                <b>Processes:</b> {{ container.processes }}<br/>
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">Network</div>
+            <div class="panel-body">
+                {% for key, item in container.full_network_info.items %}
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h3><b>Interface {{ key }}</b></h3> <br/>
+                            {% for lkey, litem in item.items %}
+                                <b>{{ lkey }}: </b>
+                                {% if lkey == 'addresses' %} <br/>
+                                    <ul class="list-group">
+                                        {% for xitem in litem %}
+                                            {% for elkey, elitem in xitem.items %}
+                                                <li class="list-group-item">
+                                                    <b>{{ elkey }}:</b>
+                                                    {{ elitem }}
+                                                </li>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </ul>
+                                {% elif lkey == 'counters' %} <br/>
+                                    <ul class="list-group">
+                                        {% for elkey, elitem in litem.items %}
+                                            <li class="list-group-item">
+                                                <b>{{ elkey }}:</b> {{ elitem }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    {{ litem }}
+                                {% endif %}<br/>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <hr>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

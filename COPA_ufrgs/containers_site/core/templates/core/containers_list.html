@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}Containers list{% endblock %}
+{% block content_body %}
+    <div class="container">
+        <div class="col" style="float:left;">
+            <p style="display:block; padding-top:10px;">All containers by each
+                container pool</p>
+        </div>
+        <div class="col" style="float:right; max-width:400px;">
+            <div style="float:right;">
+                <div class="input-group stylish-input-group">
+                    <input type="text" class="form-control" onkeyup="SearchJS()"
+                           placeholder="Search" id="text_search">
+                    <span class="input-group-addon">
+                    <button type="submit">
+                        <span class="glyphicon glyphicon-search"
+                              onclick="SearchJS()"></span>
+                    </button>
+                </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if message %}
+        <div class="container" style="margin-top:15px;">
+            <div class="alert {{ alert_type }} alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert"
+                   aria-label="close">&times;</a>
+                {{ message|safe }}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="container">
+        <table class="table" id="table_containers">
+            <tbody>
+            {% for key,containerx in containers.items %}
+                <tr>
+                    <td style="vertical-align:middle; border-top:none;"
+                        colspan="10"><h3>{{ key }}</h3></td>
+                </tr>
+                <tr>
+                    <th style='display:none'></th>
+                    <th>Container name</th>
+                    <th>Network addresses</th>
+                    <th>Created at</th>
+                    <th>Status</th>
+                    <th>Options</th>
+                </tr>
+                {% for container in containerx %}
+                    {% if container.status == 'Running' %}
+                        <tr class="bg-success">
+                    {% elif container.status == 'Stopped' %}
+                        <tr class="bg-info">
+                    {% elif container.status == 'Frozen' %}
+                        <tr class="bg-warning">
+                    {% endif %}
+                <td style='display:none'>{{ key }}</td>
+                <td><b><a
+                        href="{% url 'containers_list' %}info/{{ key }}/{{ container.name }}">{{ container.name|upper }}</a></b>
+                </td>
+                <td>
+                    {% for key, item in container.full_network_info.items %}                        
+                        {% for lkey, litem in item.items %}
+                            {% if lkey == 'addresses' %}
+                                {% for xitem in litem %}
+                                    {% for elkey, elitem in xitem.items %}
+                                        {% if elkey == 'address' and elitem != '127.0.0.1' and key != 'lo' and xitem.family != 'inet6' %}
+                                            {{ elitem }}/{{ xitem.netmask }}
+                                            <br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </td>
+                <td>{{ container.created }}</td>
+                <td>{{ container.status }}</td>
+                <td style="width:315px">
+                    {% if container.status == 'Stopped' %}
+                        <a type="button" class="btn btn-success btn-sm"
+                           style="float:left; margin-left: 10px"
+                           href="{% url 'containers_list' %}start/{{ key }}/{{ container.name }}">Start</a>
+                    {% endif %}
+                    {% if container.status != 'Stopped' %}
+                        <a type="button" class="btn btn-primary btn-sm"
+                           style="float:left; margin-left: 10px"
+                           href="{% url 'containers_list' %}stop/{{ key }}/{{ container.name }}">Stop</a>
+                    {% endif %}
+                    <a type="button"
+                       class="btn btn-default btn-sm {% if container.status != 'Running' %}disabled{% endif %}"
+                       style="float:left; margin-left: 10px"
+                       href="{% url 'containers_list' %}terminal/{{ key }}/{{ container.name }}">Terminal</a>
+                    {% if container.status != 'Stopped' and container.status != 'Frozen' %}
+                        <a type="button" class="btn btn-warning btn-sm"
+                           style="float:left; margin-left: 10px;"
+                           href="{% url 'containers_list' %}freeze/{{ key }}/{{ container.name }}">Freeze</a>
+                    {% endif %}
+
+                    {% if container.status == 'Frozen' %}
+                        <a type="button" class="btn btn-warning btn-sm"
+                           style="float:left; margin-left: 10px;"
+                           href="{% url 'containers_list' %}unfreeze/{{ key }}/{{ container.name }}">Unfreeze</a>
+                    {% endif %}
+
+                    {% if container.status == 'Stopped' %}
+                        <a type="button" class="btn btn-danger btn-sm"
+                           style="float:left; margin-left: 10px"
+                           href="{% url 'containers_list' %}delete/{{ key }}/{{ container.name }}"
+                           onclick="return confirm('Are you sure you want to delete this container?');">Delete</a>
+                    {% endif %}
+
+                    <div class="dropdown"
+                         style="float: left; margin-left: 10px">
+                        <button class="btn btn-info btn-sm dropdown-toggle"
+                                type="button" data-toggle="dropdown">
+                            Migrate<span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            {% for server in servers %}
+                                {% if server != key %}
+                                    <li>
+                                        <a href="{% url 'containers_list' %}migrate/{{ key }}/{{ container.name }}/{{ server }}">
+                                            To: {{ server }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </td>
+                </tr>
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <script type="text/javascript">
+            function SearchJS() {
+                // Declare variables
+                var input, filter, table, tr, td, i;
+                input = document.getElementById("text_search");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("table_containers");
+                tr = table.getElementsByTagName("tr");
+
+                // Loop through all table rows, and hide those who don't match the search query
+                for (i = 0; i < tr.length; i++) {
+                    ts = tr[i].getElementsByTagName("td")
+                    counter = 0;
+                    for (j = 0; j < ts.length && ts.length > 1; j++) {
+                        td = tr[i].getElementsByTagName("td")[j];
+                        if (td) {
+                            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                                counter++;
+                            }
+                        }
+                    }
+                    if (counter >= 1) {
+                        tr[i].style.display = "";
+                    }
+                    else if (ts.length > 1) {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        </script>
+    </div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}CoLiSEU Monitor{% endblock %}
+{% block content_body %}
+<div class="container">
+    {% if user.is_authenticated %}
+    <p><a href="{% url 'configurations' %}">Your configurations</a></p>
+    {% else %}
+    <p>Please Login <a href="{% url 'login' %}?next={{ request.path }}">Here</a>
+    </p>
+    {% endif %}
+</div>
+{% endblock %}

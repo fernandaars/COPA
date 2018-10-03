@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block content_body %}
+    <div class="container">
+        <style>
+            table, td {
+                border: 1px solid black;
+                padding: 5px;
+                text-align: center;
+            }
+        </style>
+        <p><strong>Delegation mode:</strong>
+            {% if configuration.delegation_mode == 'a' %}
+                Automatic{% elif configuration.delegation_mode == 'm' %}
+                Manual{% endif %}</p>
+        {% if configuration.delegation_mode == 'a' %}
+            <p><strong>Automatic delegation
+                type:</strong> {{ configuration.auto_delegation_type }}
+            </p>{% endif %}
+
+        <p><a href="{{ configuration.get_absolute_url }}/update/">Update
+            configuration</a></p>
+        <p><a href="{{ configuration.get_absolute_url }}/delete/">Delete
+            configuration</a></p>
+
+        <div style="margin-left: 20px;margin-top: 20px">
+            <h4>Tier Classes</h4>
+            {% for tierclass in configuration.tierclass_set.all %}
+                <li><strong><a
+                        href="{{ tierclass.get_absolute_url }}">{{ tierclass.name }}</a></strong>
+                </li>
+            {% endfor %}
+            <li><a href="{% url 'tierclass_create' %}">+ Add new Tier Class</a>
+            </li>
+        </div>
+        <hr>
+        <div style="margin-left: 20px;margin-top: 20px">
+            <h4>Pools</h4>
+            <table>
+                <tr>
+                    <td><strong>Name</strong></td>
+                    <td><strong>Tier Class</strong></td>
+                </tr>
+                {% for pool in configuration.pool_set.all %}
+                    <tr>
+                        <td>
+                            <a href="{{ pool.get_absolute_url }}">{{ pool.name }}</a>
+                        </td>
+                        <td>
+                            <a href="{{ pool.tier_class.get_absolute_url }}">{{ pool.tier_class.name }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <li><a href="{% url 'locus_create' %}">+ Add new Pool</a></li>
+
+        </div>
+    </div>
+{% endblock %}

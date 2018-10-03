@@ -1,0 +1,56 @@
+{% load staticfiles %}
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Containers ADMIN</title>
+    <meta name="description" content="{% block description %}{% endblock %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet"
+          href="{% static 'core/plugins/libs/bootstrap-3.3.5/css/bootstrap.css' %}">
+    <style>
+        body {
+            padding-top: 50px;
+            padding-bottom: 20px;
+        }
+    </style>
+    <link rel="stylesheet"
+          href="{% static 'core/plugins/libs/bootstrap-3.3.5/css/bootstrap-theme.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'core/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'core/plugins/css/main.css' %}">
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Containers</a>
+        </div>
+        <ul class="nav nav-pills">
+            <li role="presentation" class="active"><a href="#">Home</a></li>
+            <li role="presentation"><a href="#">Profile</a></li>
+            <li role="presentation"><a href="#">Messages</a></li>
+        </ul>
+        <div id="navbar" class="navbar-collapse collapse"></div>
+    </div>
+</nav>
+{% block content_body %}{% endblock %}
+<center>
+    FUTEBOL Project
+</center>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="{{ STATIC_URL }}libs/jquery/2.1.0/jquery-2.1.0.min.js"><\/script>')</script>
+<script src="{% static 'core/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'core/plugins/js/main.js' %}"></script>
+</body>
+</html>

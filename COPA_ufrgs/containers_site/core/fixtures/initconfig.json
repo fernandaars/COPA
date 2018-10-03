@@ -1,0 +1,10 @@
+[
+  {
+    "model": "core.configuration",
+    "pk": 1,
+    "fields": {
+      "name": "default",
+      "delegation_mode": "m",
+      "auto_delegation_type": ""}
+  }
+]

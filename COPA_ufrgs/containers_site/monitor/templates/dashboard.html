@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Monitor <small>follow the statistics!</small>{% endblock %}
+{% block content_body %}
+
+
+<div id="dashboard-main" class="container-fluid">
+    <div id="navigator" class="row">
+        <div class="col-md-12">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                        
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                    </button> 
+                    <a class="navbar-brand" href="#">Delegation</a>
+                </div>
+                
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a id="btn-manual" class="btn-deleg" href="#">Manual</a>
+                        </li>
+                        <li class="dropdown">
+                                <a href="#" class="dropdown-toggle btn-deleg" data-toggle="dropdown">Automatic<strong class="caret"></strong></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a id="btn-thresh-cpu" class="btn-deleg" href="#">Threshold - CPU</a>
+                                </li>
+                                <li>
+                                    <a id="btn-thresh-lat" class="btn-deleg" href="#">Threshold - Latency</a>
+                                </li>
+                                <li>
+                                    <a id="btn-thresh-cpulat" class="btn-deleg" href="#">Threshold - CPU/Latency</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="btn-geo-animation" style="float:right">
+                        <button class="btn btn-default navbar-btn">On</button>
+                        <p class="navbar-text"> Animation: </p>
+                    </div>
+                </div>
+                
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert-box success">Successful Alert !!!</div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-container-link" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                 <h3 class="modal-title" id="myModalLabel">Server 1 Network Links</h3>
+            </div>
+            
+            
+            <div class="modal-body">
+                <div id="optical-bord" class="bord"> 
+                     <div class="card-header">
+                        <div role="tabpanel">
+                            <ul id="tab-list" class="nav nav-tabs" role="tablist">
+                                <li class="nav-item"><h4>Optical</h4></li>
+                                <a id="all_optical_tab" href="#all_optical" aria-controls="all_optical" role="tab" data-toggle="tab">All</a> 
+                            </ul>
+                            
+                            
+                            <div id="tab-content" class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="to_server">
+                                    
+                                    <div class="card-group">
+                                        <div class="card" style="width: 50rem;">
+                                            <div class="card-body">
+                                                <div id="menu-dropdown" class="dropdown">
+                                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true">
+                                                        Options
+                                                        </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <button id=#5points class="dropdown-item" type="button"><a class="dropdown_link" id="5points" style="text-decoration:none"> 5 points </a></button>
+                                                        <button id=#10points class="dropdown-item" type="button"><a class="dropdown_link" id="10points" style="text-decoration:none"> 10 points </a></button>
+                                                        <button id=#20points class="dropdown-item" type="button"><a class="dropdown_link" id="20points" style="text-decoration:none"> 20 points </a></button>
+                                                    </div>
+                                                </div>
+
+
+                                                <h6 class="card-title">Latency</h6>
+                                            
+                                                <div id="chart1"></div>
+                                                <p class="card-text"> 
+                                                    <span class="data1" style="display: block;"></span>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="card" style="width: 50rem;">
+                                            <div class="card-body" id="jitter-card">
+                                                <h6 class="card-title">Jitter</h6>
+                                                <div id="chart2""></div>
+                                                <p class="card-text">
+                                                    <span class="data1" style="display: block;""></span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                </div>
+                                
+                                <div role="tabpanel" class="tab-pane" id="all_optical" style="width: 100%;" >
+                                    
+                                    <table id="table-optical" class="display" style="width:100%"></table>                          
+                                
+                                </div>     
+                            
+                            </div>                                        
+                        </div>
+                    </div>
+                </div>      
+                
+                <div id="wireless-bord" class="bord">            
+                    <div class="card-header">             
+                        <div role="tabpanel">
+                            <ul id="wireless-tab-list" class="nav nav-tabs" role="tablist">
+                                <li class="nav-item"><h4>Wireless</h4></li>
+                                <!-- <li role="presentation" class="active"><a id="device_" class="tab_link" href="#device_" aria-controls="device_" role="tab" data-toggle="tab">Device 2</a></li> -->
+                                
+                                <a id="all_wireless_tab" href="#all_wireless" aria-controls="all_wireless" role="tab" data-toggle="tab">All</a>
+                            </ul>
+                            
+                            <div class="tab-content">
+                                
+                                <div role="tabpanel" class="tab-pane active" id="device_">
+                                    <div class="card-body">
+                                       <span id="mac_data" class="panel-title">MAC: 0</span>
+                                        <div class="card-group">
+                                            <div class="card" style="width: 50rem;">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Signal</h6>
+                                                    <div id="container-speed" ></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="card" style="width: 50rem;">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Data Load</h6>
+                                                    <div id="chart3"></div> 
+
+                                                    <p class="card-text" style="height: 0px;">
+
+                                                        <ul id= "data-wireless">
+                                                            <li><span id="tx_failed_data" style="display: block">TX Failed: 0</span></li>
+                                                            <li><span id="tx_bytes_data" style="display: block">TX Bytes: 0</span></li>
+                                                            <li><span id="rx_bytes_data" style="display: block">RX Bytes: 0</span></li>
+                                                        </ul>
+
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div role="tabpanel" class="tab-pane" id="all_wireless" style="width: 100%;" > 
+                                    <table id="table-wireless" class="display" style="width:100%"></table>
+                                </div>
+
+                            </div>
+                        </div>            
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>   
+            </div>        
+        </div>               
+    </div>
+</div>
+
+<script src="{% static 'monitor/js/dashboard.js' %}"></script>
+<script src="{% static 'monitor/js/modal.js' %}"></script>
+<script src="{% static 'monitor/js/charts_copa.js' %}"></script>
+
+
+{% endblock %}

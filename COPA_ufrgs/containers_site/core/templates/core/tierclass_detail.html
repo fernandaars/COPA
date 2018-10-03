@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}TierClass Details{% endblock %}
+
+{% block content_body %}
+    <div class="container">
+        <h1>{{ tierclass }}</h1>
+
+        <p><a href="{{ tierclass.get_absolute_url }}/delete/">Delete
+            TierClass</a></p>
+
+        <div style="margin-left: 20px;margin-top: 20px">
+            <h4>Locus</h4>
+
+            {% for pool in tierclass.pool_set.all %}
+                <hr>
+                <p><strong>Name: </strong><a
+                        href="{{ pool.get_absolute_url }}">{{ pool.name }}</a>
+                </p>
+            {% endfor %}
+            <li><a href="{% url 'tier_locus_create' tierclass.pk %}">+ Add new
+                Locus</a></li>
+
+        </div>
+    </div>
+{% endblock %}

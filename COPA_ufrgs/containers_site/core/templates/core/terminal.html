@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block page_title %} {{ container_name }}'s terminal -  {% endblock %}
+{% block title %}Terminal{% endblock %}
+{% block content_body %}
+    <div class="container">
+        <p>Terminal container service <b>{{ container_name }}</b></p>
+    </div>
+
+    <div class="container">
+        <div class="container">
+            <div id="terminal"></div>
+            <script>
+                var COPA_HOST = "10.0.0.2"; //COPA's host IP address.
+                var client = {};
+
+                client.run = function (options) {
+
+                    options = options || {};
+
+                    var socket = io.connect(options.remote || "http://" + COPA_HOST + ":8100");
+                    socket.on('connect', function () {
+                        var term = new Terminal({
+                            cols: 120,
+                            rows: 25,
+                            useStyle: true,
+                            screenKeys: true
+                        });
+
+                        term.on('data', function (data) {
+                            socket.emit('data', data);
+                        });
+
+                        socket.on('data', function (data) {
+                            term.write(data);
+                        });
+
+                        term.open(options.parent || document.body);
+                        term.write('FUTEBOL TESTBED WELCOME!\r\nStarting container web interface service...\r\n');
+
+                        socket.on('disconnect', function () {
+                            term.destroy();
+                        });
+
+                        // for displaying the first command line
+                        socket.emit("join", '{{ container_address }}');
+                        socket.emit('data', '\n');
+                    });
+                };
+
+                var e = document.getElementById("terminal");
+                client.run({
+                    parent: e,
+                    remote: "{{ server_socket }}:8100"
+                });
+            </script>
+        </div>
+        <div class="container"></div>
+    </div>
+{% endblock %}

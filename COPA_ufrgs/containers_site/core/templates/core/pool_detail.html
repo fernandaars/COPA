@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Locus Details{% endblock %}
+
+{% block content_body %}
+    <style>
+        table, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+        }
+    </style>
+    <p class="container">
+    <h1>{{ pool }}</h1>
+    <p><strong>Tier Class: </strong><a
+            href="{{ pool.tier_class.get_absolute_url }}">{{ pool.tier_class.name }}</a>
+    </p>
+
+    <p><a href="{{ pool.get_absolute_url }}/update/">Update Locus Info</a></p>
+    <p><a href="{{ pool.get_absolute_url }}/delete/">Delete Locus</a></p>
+
+    <div style="margin-left: 20px;margin-top: 20px">
+        <h4>KPI Link</h4>
+        <table>
+            <tr>
+                <td rowspan="2"><strong> ID </strong></td>
+                <td rowspan="2"><strong> Locus1 </strong></td>
+                <td rowspan="2"><strong> Locus2 </strong></td>
+                <td colspan="4"><strong> 1 -> 2 </strong></td>
+                <td colspan="4"><strong> 2 -> 1 </strong></td>
+                <td rowspan="2"><strong> Throughput </strong></td>
+            </tr>
+            <tr>
+                <td><strong> Jitter </strong></td>
+                <td><strong> Latency Max </strong></td>
+                <td><strong> Latency Median </strong></td>
+                <td><strong> Latency Min </strong></td>
+                <td><strong> Jitter </strong></td>
+                <td><strong> Latency Max </strong></td>
+                <td><strong> Latency Median </strong></td>
+                <td><strong> Latency Min </strong></td>
+            </tr>
+            {% for measurement in pool.kpilink_set.all %}
+                <tr>
+                    <td>{{ measurement.pk }}</td>
+                    <td>{{ measurement.locus1 }}</td>
+                    <td>{{ measurement.locus2 }}</td>
+                    <td>{{ measurement.jitter_1to2 }}</td>
+                    <td>{{ measurement.latency_max_1to2 }}</td>
+                    <td>{{ measurement.latency_median_1to2 }}</td>
+                    <td>{{ measurement.latency_min_1to2 }}</td>
+                    <td>{{ measurement.jitter_2to1 }}</td>
+                    <td>{{ measurement.latency_max_2to1 }}</td>
+                    <td>{{ measurement.latency_median_2to1 }}</td>
+                    <td>{{ measurement.latency_min_2to1 }}</td>
+                    <td>{{ measurement.throughput }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div style="margin-left: 20px;margin-top: 20px">
+        <h4>Command Measurements</h4>
+        <table>
+            <tr>
+                <td><strong> ID </strong></td>
+                <td><strong> Processing time </strong></td>
+                <td><strong> Response time </strong></td>
+                <td><strong> Command </strong></td>
+                <td><strong> Command Type </strong></td>
+            </tr>
+            {% for measurement in pool.kpicommand_set.all %}
+                <tr>
+                    <td>{{ measurement.pk }}</td>
+                    <td>{{ measurement.proc_time }}</td>
+                    <td>{{ measurement.response_time }}</td>
+                    <td>{% if measurement.cmd != '' %}
+                        {{ measurement.cmd }}{% else %}Null{% endif %}</td>
+                    <td>{% if measurement.cmd_type == 'v' %}
+                        Voice{% elif measurement.cmd_type == 'g' %}
+                        Gesture{% elif measurement.cmd_type == '' %}
+                        Null{% else %}Invalid{% endif %}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    </div>
+{% endblock %}
